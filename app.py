@@ -41,49 +41,49 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 print("🔄 Loading models...")
 
 try:
-    heart_disease_model = pickle.load(open('/models/heart_disease_xgb_model.pkl', 'rb'))
+    heart_disease_model = pickle.load(open('models/heart_disease_xgb_model.pkl', 'rb'))
     print("✅ Heart Disease loaded")
 except:
     heart_disease_model = None
     print("⚠️ Heart Disease missing")
 
 try:
-    diabetes_model = pickle.load(open('/models/diabetes_xgb_model.pkl', 'rb'))
+    diabetes_model = pickle.load(open('models/diabetes_xgb_model.pkl', 'rb'))
     print("✅ Diabetes loaded")
 except:
     diabetes_model = None
     print("⚠️ Diabetes missing")
 
 try:
-    breast_cancer_model = pickle.load(open('/models/breast_cancer_xgb_model.pkl', 'rb'))
+    breast_cancer_model = pickle.load(open('models/breast_cancer_xgb_model.pkl', 'rb'))
     print("✅ Breast Cancer loaded")
 except:
     breast_cancer_model = None
     print("⚠️ Breast Cancer missing")
 
 try:
-    alzheimers_model = keras.models.load_model('/models/alzheimer_cnn_20251005_004009.h5')
+    alzheimers_model = keras.models.load_model('models/alzheimer_cnn_20251005_004009.h5')
     print("✅ Alzheimer's loaded")
 except:
     alzheimers_model = None
     print("⚠️ Alzheimer's missing")
 
 try:
-    brain_tumor_model = keras.models.load_model('/models/brain_tumor_model_cpu.h5')
+    brain_tumor_model = keras.models.load_model('models/brain_tumor_model_cpu.h5')
     print("✅ Brain Tumor loaded")
 except:
     brain_tumor_model = None
     print("⚠️ Brain Tumor missing")
 
 try:
-    pneumonia_model = keras.models.load_model('/models/pneumonia_binary_best_model.h5')
+    pneumonia_model = keras.models.load_model('models/pneumonia_binary_best_model.h5')
     print("✅ Pneumonia loaded")
 except:
     pneumonia_model = None
     print("⚠️ Pneumonia missing")
 
 try:
-    covid_model = keras.models.load_model('/models/covid_binary_best_model.h5')
+    covid_model = keras.models.load_model('models/covid_binary_best_model.h5')
     print("✅ COVID loaded")
 except:
     covid_model = None
