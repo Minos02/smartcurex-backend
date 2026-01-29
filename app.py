@@ -15,6 +15,7 @@ from datetime import datetime
 import google.generativeai as genai
 from supabase import create_client, Client
 from dotenv import load_dotenv
+from flask import send_from_directory
 
 # Load environment variables from .env file
 load_dotenv()
@@ -34,55 +35,55 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 jwt = JWTManager(app)
 
-CORS(app, resources={r"/*": {"origins": ["http://localhost:5173"]}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # ========== LOAD MODELS ==========
 print("🔄 Loading models...")
 
 try:
-    heart_disease_model = pickle.load(open('../Piyush Gupta/SmartCureX/models/New Datasets/heart_disease_xgb_model.pkl', 'rb'))
+    heart_disease_model = pickle.load(open('/models/heart_disease_xgb_model.pkl', 'rb'))
     print("✅ Heart Disease loaded")
 except:
     heart_disease_model = None
     print("⚠️ Heart Disease missing")
 
 try:
-    diabetes_model = pickle.load(open('../Piyush Gupta/SmartCureX/models/New Datasets/diabetes_xgb_model.pkl', 'rb'))
+    diabetes_model = pickle.load(open('/models/diabetes_xgb_model.pkl', 'rb'))
     print("✅ Diabetes loaded")
 except:
     diabetes_model = None
     print("⚠️ Diabetes missing")
 
 try:
-    breast_cancer_model = pickle.load(open('../Piyush Gupta/SmartCureX/models/New Datasets/breast_cancer_xgb_model.pkl', 'rb'))
+    breast_cancer_model = pickle.load(open('/models/breast_cancer_xgb_model.pkl', 'rb'))
     print("✅ Breast Cancer loaded")
 except:
     breast_cancer_model = None
     print("⚠️ Breast Cancer missing")
 
 try:
-    alzheimers_model = keras.models.load_model('../Piyush Gupta/SmartCureX/models/New Datasets/alzheimer_cnn_20251005_004009.h5')
+    alzheimers_model = keras.models.load_model('/models/alzheimer_cnn_20251005_004009.h5')
     print("✅ Alzheimer's loaded")
 except:
     alzheimers_model = None
     print("⚠️ Alzheimer's missing")
 
 try:
-    brain_tumor_model = keras.models.load_model('../Piyush Gupta/SmartCureX/samplez/BrainTumor/brain_tumor_model_cpu.h5')
+    brain_tumor_model = keras.models.load_model('/models/brain_tumor_model_cpu.h5')
     print("✅ Brain Tumor loaded")
 except:
     brain_tumor_model = None
     print("⚠️ Brain Tumor missing")
 
 try:
-    pneumonia_model = keras.models.load_model('../Piyush Gupta/SmartCureX/models/New Datasets/pneumonia_binary_best_model.h5')
+    pneumonia_model = keras.models.load_model('/models/pneumonia_binary_best_model.h5')
     print("✅ Pneumonia loaded")
 except:
     pneumonia_model = None
     print("⚠️ Pneumonia missing")
 
 try:
-    covid_model = keras.models.load_model('../Piyush Gupta/SmartCureX/models/New Datasets/covid_binary_best_model.h5')
+    covid_model = keras.models.load_model('/models/covid_binary_best_model.h5')
     print("✅ COVID loaded")
 except:
     covid_model = None
@@ -753,7 +754,7 @@ Just chat naturally about health and our platform! 💙"""
         }
         
         model = genai.GenerativeModel(
-            'gemini-2.0-flash-lite',
+            'gemini-3-flash-preview',
             generation_config=generation_config,
             safety_settings=safety_settings
         )
@@ -827,6 +828,15 @@ def get_predictions():
     except Exception as e:
         print(f"❌ Get predictions error: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react(path):
+    if path and os.path.exists(os.path.join('client-build', path)):
+        return send_from_directory('client-build', path)
+    if os.path.exists('client-build/index.html'):
+        return send_from_directory('client-build', 'index.html')
+    return jsonify({'error': 'Frontend not built'}), 404
 
 
 if __name__ == '__main__':
